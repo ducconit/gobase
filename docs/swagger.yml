@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: GoBase
+  description: |-
+    This is a sample server.
+  contact:
+    email: ducconit@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:1297
+tags:
+  - name: system
+    description: Everything about system
+paths:
+  /api/ping:
+    get:
+      tags:
+        - system
+      summary: Ping server
+      description: Health check server
+      operationId: ping
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Pong'
+components:
+  schemas:
+    Pong:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 200
+        message:
+          type: string
+          example: pong
