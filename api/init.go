@@ -13,9 +13,9 @@ type Router struct {
 }
 
 func RegisterRouter(app *fiber.App) *Router {
-	base := app.Group("/", context.NewContext)
+	app.Use(context.RegisterContextFiber)
 
-	api := base.Group("/api")
+	api := app.Group("/api")
 
 	routes := &Router{
 		App: app,

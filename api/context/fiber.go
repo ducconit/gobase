@@ -6,10 +6,16 @@ type Context struct {
 	*fiber.Ctx
 }
 
-func NewContext(ctx *fiber.Ctx) error {
-	c := &Context{ctx}
+type Handler func(*Context) error
 
-	c.Locals("ctx", c)
-
+func RegisterContextFiber(ctx *fiber.Ctx) error {
+	ctx.Locals("fiberCtx", &Context{Ctx: ctx})
 	return ctx.Next()
+}
+
+func WithContextFiber(h Handler) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		ctx := c.Locals("fiberCtx").(*Context)
+		return h(ctx)
+	}
 }
