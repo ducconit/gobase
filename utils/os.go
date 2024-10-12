@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"context"
 	"os"
 	"os/signal"
-	"syscall"
 )
 
 func WaitOSSignalHandler(f func(), signals ...os.Signal) {
@@ -11,10 +11,9 @@ func WaitOSSignalHandler(f func(), signals ...os.Signal) {
 		return
 	}
 
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, signals...)
-	<-ch
-
+	ctx, stop := signal.NotifyContext(context.Background(), signals...)
+	defer stop()
+	<-ctx.Done()
 	f()
 }
 
@@ -27,5 +26,5 @@ func RegisterOSSignalHandler(f func(), signals ...os.Signal) {
 }
 
 func RegisterSignalDefaultHandler(f func()) {
-	RegisterOSSignalHandler(f, syscall.SIGINT, syscall.SIGTERM)
+	RegisterOSSignalHandler(f, os.Interrupt, os.Kill)
 }

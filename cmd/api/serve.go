@@ -1,12 +1,15 @@
 package api
 
 import (
+	"context"
+	"github.com/ducconit/gobase/api"
+	"github.com/ducconit/gobase/api/server"
 	"github.com/ducconit/gobase/app"
 	"github.com/ducconit/gobase/config"
 	"github.com/ducconit/gobase/utils"
 	"github.com/spf13/cobra"
 	"log"
-	"os"
+	"time"
 )
 
 var ServeCmd = &cobra.Command{
@@ -35,15 +38,22 @@ func serveApiServer(cfgPath, addr string) error {
 	}
 	a := app.NewApp(app.WithConfig(cfg))
 
-	srv := app.NewServerApi(a)
+	e := server.NewEchoServer(a)
 
-	utils.RegisterOSSignalHandler(func() {
-		log.Println("Shutting down...")
-		if err := srv.Shutdown(); err != nil {
+	srv, err := api.NewServer(e)
+	if err != nil {
+		return err
+	}
+
+	utils.RegisterSignalDefaultHandler(func() {
+		log.Println("Server is shutting down")
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
 			log.Println(err)
 			return
 		}
-	}, os.Interrupt, os.Kill)
+	})
 
-	return srv.Run(addr)
+	return srv.Listen(addr)
 }

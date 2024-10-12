@@ -1,6 +1,8 @@
 package app
 
-import "github.com/ducconit/gobase/config"
+import (
+	"github.com/ducconit/gobase/config"
+)
 
 type Option func(app *App)
 

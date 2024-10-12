@@ -2,11 +2,11 @@ package system
 
 import (
 	"github.com/ducconit/gobase/api/context"
-	"github.com/gofiber/fiber/v2"
+	"net/http"
 )
 
-func Ping(ctx *context.Context) error {
-	return ctx.JSON(fiber.Map{
+func Ping(ctx context.Context) error {
+	return ctx.JSON(http.StatusOK, map[string]any{
 		"status":  200,
 		"message": "pong",
 	})
