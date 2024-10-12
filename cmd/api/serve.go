@@ -3,7 +3,10 @@ package api
 import (
 	"github.com/ducconit/gobase/app"
 	"github.com/ducconit/gobase/config"
+	"github.com/ducconit/gobase/utils"
 	"github.com/spf13/cobra"
+	"log"
+	"os"
 )
 
 var ServeCmd = &cobra.Command{
@@ -33,6 +36,14 @@ func serveApiServer(cfgPath, addr string) error {
 	a := app.NewApp(app.WithConfig(cfg))
 
 	srv := app.NewServerApi(a)
+
+	utils.RegisterOSSignalHandler(func() {
+		log.Println("Shutting down...")
+		if err := srv.Shutdown(); err != nil {
+			log.Println(err)
+			return
+		}
+	}, os.Interrupt, os.Kill)
 
 	return srv.Run(addr)
 }
