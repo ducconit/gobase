@@ -6,6 +6,7 @@ import (
 	"github.com/ducconit/gobase/api/server"
 	"github.com/ducconit/gobase/app"
 	"github.com/ducconit/gobase/config"
+	"github.com/ducconit/gobase/db"
 	"github.com/ducconit/gobase/utils"
 	"github.com/spf13/cobra"
 	"log"
@@ -13,7 +14,7 @@ import (
 )
 
 var ServeCmd = &cobra.Command{
-	Use:   "serve",
+	Use:   "api:serve",
 	Short: "Start the api server",
 	Long:  "Start the api server.",
 	RunE: func(cmd *cobra.Command, _ []string) error {
@@ -36,7 +37,13 @@ func serveApiServer(cfgPath, addr string) error {
 	if err := cfg.Load(); err != nil {
 		return err
 	}
-	a := app.NewApp(app.WithConfig(cfg))
+
+	d, err := db.NewFromConfig(cfg)
+	if err != nil {
+		return err
+	}
+
+	a := app.NewApp(app.WithConfig(cfg), app.WithDatabase(d))
 
 	e := server.NewEchoServer(a)
 

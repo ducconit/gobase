@@ -9,3 +9,6 @@
 /config.yml
 /config.json
 /config.toml
+/vendor
+
+/*.sqlite

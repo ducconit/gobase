@@ -1,0 +1,6 @@
+api:
+  binding: 127.0.0.1:1297
+
+db:
+  driver: sqlite
+  dsn: ./db.sqlite
