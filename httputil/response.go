@@ -21,8 +21,8 @@ var (
 	ErrServiceUnavailable = "503"
 )
 
-// Response defines the standard structure for an API response.
-type Response struct {
+// JsonResponse defines the standard structure for an API response.
+type JsonResponse struct {
 	// Code indicates the status of the request. "0" for success, non-zero strings for errors.
 	Code string `json:"code"`
 
@@ -40,9 +40,9 @@ type Response struct {
 }
 
 // Success sends a standardized success response (HTTP 200 OK) using Gin's context.
-// It wraps the data in the standard Response struct.
+// It wraps the data in the standard JsonResponse struct.
 func Success(c *gin.Context, data any, message string) {
-	response := Response{
+	response := JsonResponse{
 		Code:      ErrNone,
 		Message:   message,
 		Data:      data,
@@ -55,7 +55,7 @@ func Success(c *gin.Context, data any, message string) {
 // The HTTP status code should be an appropriate error code (e.g., 400, 404, 500).
 // It accepts an optional `extra` parameter for additional details.
 func Error(c *gin.Context, httpStatusCode int, errorCode string, errorMessage string, extra ...any) {
-	response := Response{
+	response := JsonResponse{
 		Code:      errorCode,
 		Message:   errorMessage,
 		RequestID: c.Writer.Header().Get(RequestIDHeaderKey),
