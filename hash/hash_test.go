@@ -129,3 +129,39 @@ func TestCheckWithEmptyPassword(t *testing.T) {
 		t.Error("Check() should return false for incorrect password")
 	}
 }
+
+func TestIsHash(t *testing.T) {
+	password := "testpassword123"
+	validHash := Make(password)
+
+	// Test valid hash
+	if !IsHash(validHash) {
+		t.Error("IsHash() should return true for valid bcrypt hash")
+	}
+
+	// Test invalid hash - too short
+	if IsHash("tooshort") {
+		t.Error("IsHash() should return false for short string")
+	}
+
+	// Test invalid hash - wrong prefix
+	if IsHash(strings.Repeat("a", 60)) {
+		t.Error("IsHash() should return false for string without bcrypt prefix")
+	}
+
+	// Test invalid hash - empty string
+	if IsHash("") {
+		t.Error("IsHash() should return false for empty string")
+	}
+
+	// Test invalid hash - wrong length
+	if IsHash(strings.Repeat("a", 59)) {
+		t.Error("IsHash() should return false for wrong length")
+	}
+
+	// Test invalid hash - correct prefix but invalid cost
+	invalidHash := "$2a$99" + strings.Repeat("a", 53)
+	if IsHash(invalidHash) {
+		t.Error("IsHash() should return false for invalid bcrypt cost")
+	}
+}

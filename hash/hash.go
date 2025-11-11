@@ -41,3 +41,9 @@ func Make(password string) string {
 func Check(plainText, hash string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(plainText)) == nil
 }
+
+// IsHash checks if the input string is a valid bcrypt hash.
+func IsHash(input string) bool {
+	_, err := bcrypt.Cost([]byte(input))
+	return err == nil
+}
