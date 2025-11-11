@@ -42,10 +42,16 @@ type JsonResponse struct {
 // Success sends a standardized success response (HTTP 200 OK) using Gin's context.
 // It wraps the data in the standard JsonResponse struct.
 func Success(c *gin.Context, data any, message string) {
+	SuccessWithExtra(c, data, nil, message)
+}
+
+// SuccessWithExtra sends a standardized success response (HTTP 200 OK) with extra data using Gin's context.
+func SuccessWithExtra(c *gin.Context, data any, extra any, message string) {
 	response := JsonResponse{
 		Code:      ErrNone,
 		Message:   message,
 		Data:      data,
+		Extra:     extra,
 		RequestID: c.Writer.Header().Get(RequestIDHeaderKey),
 	}
 	c.JSON(http.StatusOK, response)
