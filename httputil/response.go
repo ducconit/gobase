@@ -3,6 +3,7 @@ package httputil
 import (
 	"net/http"
 
+	"github.com/ducconit/gobase/paginate"
 	"github.com/gin-gonic/gin"
 )
 
@@ -104,4 +105,18 @@ func InternalServerError(c *gin.Context, message string) {
 // ServiceUnavailable sends a 503 Service Unavailable response.
 func ServiceUnavailable(c *gin.Context, message string) {
 	Error[any](c, http.StatusServiceUnavailable, ErrServiceUnavailable, message)
+}
+
+// SimplePagination sends HTTP 200 with items and simple pagination metadata.
+func SimplePagination[T any](c *gin.Context, items []T, total int64, page int, pageSize int, message string) {
+	sp := paginate.NewSimplePagination(total, page, pageSize)
+	SuccessWithExtra[[]T, *paginate.SimplePagination](c, items, sp, message)
+}
+
+// CursorPagination sends HTTP 200 with items and cursor pagination metadata.
+// cursor is the current cursor, nextCursor is the cursor for the next batch.
+// If hasMore is true, nextCursor should be the ID of the last item in data.
+func CursorPagination[T any](c *gin.Context, items []T, cursor string, nextCursor string, hasMore bool, message string) {
+	cp := paginate.NewCursorPagination(cursor, nextCursor, hasMore)
+	SuccessWithExtra[[]T, *paginate.CursorPagination](c, items, cp, message)
 }
