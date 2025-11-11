@@ -5,6 +5,7 @@ go 1.25.3
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/oklog/ulid/v2 v2.1.1
+	golang.org/x/crypto v0.43.0
 	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546
 )
 
@@ -32,7 +33,6 @@ require (
 	github.com/ugorji/go/codec v1.3.0 // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	golang.org/x/arch v0.20.0 // indirect
-	golang.org/x/crypto v0.43.0 // indirect
 	golang.org/x/mod v0.29.0 // indirect
 	golang.org/x/net v0.46.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
